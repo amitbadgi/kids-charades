@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ff5a1f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Charades Kids" />
+    <title>Kids Dumb Charades</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon-192.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <h1>Kids Dumb Charades</h1>
+        <p>Act it out. No talking. Big laughs.</p>
+      </header>
+
+      <section class="panel setup" id="setupPanel">
+        <h2>Game Setup</h2>
+        <div class="grid">
+          <label>
+            Number of Teams (2-6)
+            <input id="teamCountInput" type="number" min="2" max="6" value="2" />
+          </label>
+          <label>
+            Round Time (seconds)
+            <input id="roundTimeInput" type="number" min="20" max="180" value="60" />
+          </label>
+          <label>
+            Category
+            <select id="categorySelect"></select>
+          </label>
+          <label>
+            Difficulty
+            <select id="difficultySelect">
+              <option value="all">All</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="teams-panel">
+          <div class="teams-head">
+            <h3>Team Names</h3>
+            <button id="regenTeamsBtn" type="button">Refresh Fields</button>
+          </div>
+          <div class="suggestions-row">
+            <div id="teamSuggestionChips" class="chips"></div>
+            <button id="applySuggestionsBtn" type="button" class="chip-action">Use Suggested Names</button>
+          </div>
+          <div id="teamInputs" class="team-inputs"></div>
+        </div>
+
+        <button id="startGameBtn" class="primary big">Start Game</button>
+      </section>
+
+      <section class="panel game hidden" id="gamePanel">
+        <div class="status-row">
+          <div>
+            <p class="label">Current Team</p>
+            <p id="currentTeamLabel" class="value"></p>
+          </div>
+          <div>
+            <p class="label">Time Left</p>
+            <p id="timeLeftLabel" class="value"></p>
+          </div>
+          <div>
+            <p class="label">Difficulty</p>
+            <p id="activeDifficultyLabel" class="value"></p>
+          </div>
+        </div>
+
+        <article class="card" id="promptCard">
+          <p class="small">Act this:</p>
+          <img id="promptImage" class="prompt-image" alt="Prompt picture" />
+          <h3 id="promptText">Press Next Prompt</h3>
+          <ul id="hintList" class="hints"></ul>
+        </article>
+
+        <div class="actions">
+          <button id="nextPromptBtn">Next Prompt</button>
+          <button id="correctBtn" class="good">Correct +1</button>
+          <button id="skipBtn" class="warn">Skip</button>
+          <button id="endRoundBtn" class="danger">End Round</button>
+          <button id="endGameBtn" class="danger dark">End Game</button>
+        </div>
+
+        <div class="scores">
+          <h2>Scores</h2>
+          <div id="scoreList" class="score-list"></div>
+        </div>
+
+        <div class="round-end hidden" id="roundEndPanel">
+          <p id="roundSummary"></p>
+          <div class="round-end-actions">
+            <button id="nextTeamBtn" class="primary">Next Team</button>
+            <button id="endGameRoundBtn" class="danger dark">End Game</button>
+          </div>
+        </div>
+
+        <div class="final hidden" id="finalPanel">
+          <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+          <h2>Game Over</h2>
+          <p id="winnerLine" class="winner-line"></p>
+          <div id="finalScoreList" class="final-score-list"></div>
+          <button id="newGameBtn" class="primary big">Start New Game</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
