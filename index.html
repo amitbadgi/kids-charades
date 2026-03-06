@@ -14,6 +14,21 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="bg-orbs" aria-hidden="true">
+      <span class="orb orb-a"></span>
+      <span class="orb orb-b"></span>
+      <span class="orb orb-c"></span>
+      <span class="orb orb-d"></span>
+    </div>
+    <div id="introOverlay" class="intro-overlay">
+      <div class="intro-card">
+        <p class="intro-kicker">Game Time</p>
+        <h2>Kids Dumb Charades</h2>
+        <div class="intro-mascot" aria-hidden="true">🎭</div>
+        <p class="intro-copy">Tap to enter the game lobby</p>
+        <button id="enterLobbyBtn" class="primary intro-btn" type="button">Tap To Start</button>
+      </div>
+    </div>
     <main class="app">
       <header class="hero">
         <h1>Kids Dumb Charades</h1>
@@ -22,6 +37,35 @@
 
       <section class="panel setup" id="setupPanel">
         <h2>Game Setup</h2>
+        <div class="theme-row">
+          <p>Theme Pack</p>
+          <div id="themeButtons" class="theme-buttons">
+            <button type="button" class="theme-btn active" data-theme="jungle">🌿 Jungle</button>
+            <button type="button" class="theme-btn" data-theme="space">🚀 Space</button>
+            <button type="button" class="theme-btn" data-theme="underwater">🐠 Underwater</button>
+          </div>
+        </div>
+        <div class="mascot-stage" aria-live="polite">
+          <div id="setupMascot" class="setup-mascot">🦜</div>
+          <p id="mascotLine" class="mascot-line">Jungle Pals are ready to act.</p>
+        </div>
+        <div class="setup-showcase" aria-hidden="true">
+          <div class="showcase-card tilt-left">
+            <span class="show-emoji">🦁</span>
+            <p>Animal Acts</p>
+          </div>
+          <div class="showcase-card pulse">
+            <span class="show-emoji">🎬</span>
+            <p>Movie Mimics</p>
+          </div>
+          <div class="showcase-card tilt-right">
+            <span class="show-emoji">🕺</span>
+            <p>Action Fun</p>
+          </div>
+          <span class="spark spark-a">✨</span>
+          <span class="spark spark-b">⭐</span>
+          <span class="spark spark-c">🎉</span>
+        </div>
         <div class="grid">
           <label>
             Number of Teams (2-6)
@@ -50,10 +94,6 @@
           <div class="teams-head">
             <h3>Team Names</h3>
             <button id="regenTeamsBtn" type="button">Refresh Fields</button>
-          </div>
-          <div class="suggestions-row">
-            <div id="teamSuggestionChips" class="chips"></div>
-            <button id="applySuggestionsBtn" type="button" class="chip-action">Use Suggested Names</button>
           </div>
           <div id="teamInputs" class="team-inputs"></div>
         </div>

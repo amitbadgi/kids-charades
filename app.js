@@ -211,17 +211,6 @@ const prompts = [
   },
 ];
 
-const teamNameSuggestions = [
-  "Team Rockets",
-  "Team Ninjas",
-  "Team Rainbows",
-  "Team Tigers",
-  "Team Pirates",
-  "Team Wizards",
-  "Team Stars",
-  "Team Comets",
-];
-
 const categoryLabels = {
   mixed: "Mixed",
   animals: "Animals",
@@ -237,13 +226,64 @@ const difficultyLabels = {
   hard: "Hard",
 };
 
+const themePacks = {
+  jungle: {
+    mascot: "🦜",
+    line: "Jungle Pals are ready to act.",
+    vars: {
+      "--bg-a": "#ff8a00",
+      "--bg-b": "#ff4f81",
+      "--bg-c": "#43c59e",
+      "--orb-1": "#ffe45e",
+      "--orb-2": "#8ce99a",
+      "--orb-3": "#ffd6a5",
+      "--orb-4": "#b8f2e6",
+      "--accent": "#ff5a1f",
+      "--accent-dark": "#e54814",
+    },
+  },
+  space: {
+    mascot: "👩‍🚀",
+    line: "Space Crew is ready for zero-gravity acting.",
+    vars: {
+      "--bg-a": "#1d2d8f",
+      "--bg-b": "#6a00f4",
+      "--bg-c": "#00b4d8",
+      "--orb-1": "#a0c4ff",
+      "--orb-2": "#c77dff",
+      "--orb-3": "#90e0ef",
+      "--orb-4": "#e0aaff",
+      "--accent": "#3a86ff",
+      "--accent-dark": "#256fe0",
+    },
+  },
+  underwater: {
+    mascot: "🐙",
+    line: "Ocean Buddies are splashing into charades.",
+    vars: {
+      "--bg-a": "#0096c7",
+      "--bg-b": "#00b4d8",
+      "--bg-c": "#48cae4",
+      "--orb-1": "#caf0f8",
+      "--orb-2": "#90e0ef",
+      "--orb-3": "#ade8f4",
+      "--orb-4": "#72efdd",
+      "--accent": "#0077b6",
+      "--accent-dark": "#005f92",
+    },
+  },
+};
+
 const elements = {
+  introOverlay: document.getElementById("introOverlay"),
+  enterLobbyBtn: document.getElementById("enterLobbyBtn"),
   setupPanel: document.getElementById("setupPanel"),
   gamePanel: document.getElementById("gamePanel"),
+  themeButtons: document.getElementById("themeButtons"),
+  setupMascot: document.getElementById("setupMascot"),
+  mascotLine: document.getElementById("mascotLine"),
   teamCountInput: document.getElementById("teamCountInput"),
   teamInputs: document.getElementById("teamInputs"),
-  teamSuggestionChips: document.getElementById("teamSuggestionChips"),
-  applySuggestionsBtn: document.getElementById("applySuggestionsBtn"),
   regenTeamsBtn: document.getElementById("regenTeamsBtn"),
   roundTimeInput: document.getElementById("roundTimeInput"),
   categorySelect: document.getElementById("categorySelect"),
@@ -285,6 +325,7 @@ const state = {
   roundStartScore: 0,
   audioCtx: null,
   gameEnded: false,
+  activeTheme: "jungle",
 };
 
 function registerServiceWorker() {
@@ -332,14 +373,40 @@ function populateCategories() {
   elements.categorySelect.value = "all";
 }
 
-function renderSuggestionChips() {
-  elements.teamSuggestionChips.innerHTML = "";
-  teamNameSuggestions.forEach((name) => {
-    const chip = document.createElement("span");
-    chip.className = "chip";
-    chip.textContent = name;
-    elements.teamSuggestionChips.append(chip);
+function applyTheme(themeKey) {
+  const theme = themePacks[themeKey];
+  if (!theme) {
+    return;
+  }
+
+  state.activeTheme = themeKey;
+  Object.entries(theme.vars).forEach(([name, value]) => {
+    document.documentElement.style.setProperty(name, value);
   });
+
+  elements.setupMascot.textContent = theme.mascot;
+  elements.mascotLine.textContent = theme.line;
+
+  Array.from(elements.themeButtons.querySelectorAll(".theme-btn")).forEach((button) => {
+    button.classList.toggle("active", button.dataset.theme === themeKey);
+  });
+}
+
+function handleThemeSelect(event) {
+  const button = event.target.closest(".theme-btn");
+  if (!button) {
+    return;
+  }
+  applyTheme(button.dataset.theme);
+}
+
+function dismissIntro() {
+  if (elements.introOverlay.classList.contains("dismissed")) {
+    return;
+  }
+  elements.introOverlay.classList.add("dismissed");
+  document.body.classList.remove("intro-active");
+  playSound("start");
 }
 
 function renderTeamInputs() {
@@ -361,14 +428,6 @@ function renderTeamInputs() {
     wrapper.append(input);
     elements.teamInputs.append(wrapper);
   }
-}
-
-function applySuggestedNames() {
-  const fields = Array.from(elements.teamInputs.querySelectorAll("input"));
-  const suggestions = shuffle(teamNameSuggestions);
-  fields.forEach((field, index) => {
-    field.value = suggestions[index % suggestions.length];
-  });
 }
 
 function getTeamsFromSetup() {
@@ -701,14 +760,21 @@ function startNewGame() {
 
 function init() {
   registerServiceWorker();
+  document.body.classList.add("intro-active");
   populateCategories();
-  renderSuggestionChips();
+  applyTheme("jungle");
   renderTeamInputs();
 
   elements.teamCountInput.addEventListener("change", renderTeamInputs);
   elements.teamCountInput.addEventListener("input", renderTeamInputs);
   elements.regenTeamsBtn.addEventListener("click", renderTeamInputs);
-  elements.applySuggestionsBtn.addEventListener("click", applySuggestedNames);
+  elements.themeButtons.addEventListener("click", handleThemeSelect);
+  elements.enterLobbyBtn.addEventListener("click", dismissIntro);
+  elements.introOverlay.addEventListener("click", (event) => {
+    if (event.target === elements.introOverlay) {
+      dismissIntro();
+    }
+  });
 
   elements.startGameBtn.addEventListener("click", startGame);
   elements.nextPromptBtn.addEventListener("click", nextPrompt);
